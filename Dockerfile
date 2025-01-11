@@ -5,10 +5,10 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copy the application JAR file to the container
-COPY target/student-management.jar student-management.jar
+COPY target/*.jar student.jar
 
-# Expose port 9090 to the outside world
-EXPOSE 9090
+# Expose port 7788 to the outside world
+EXPOSE 7788
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "student-management.jar"]
+ENTRYPOINT ["java", "-jar", "student.jar"]
