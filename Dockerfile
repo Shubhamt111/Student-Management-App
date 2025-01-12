@@ -1,14 +1,35 @@
-# Use an official Java runtime as a parent image
-FROM openjdk:17-jdk-alpine
+# ======= Stage 1: Build =======
+FROM eclipse-temurin:17-jdk-alpine AS builder
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the application JAR file to the container
-COPY target/*.jar student.jar
+# Copy the application source code and build it
+COPY . .
 
-# Expose port 7788 to the outside world
+# Build the JAR file using Maven (or Gradle if applicable)
+RUN ./mvnw clean package -DskipTests
+
+# ======= Stage 2: Run =======
+FROM eclipse-temurin:17-jre-alpine
+
+# Security enhancement: Create a non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Set the working directory
+WORKDIR /app
+
+# Copy only the built JAR file from the build stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Set permissions for the JAR file
+RUN chown appuser:appgroup /app/app.jar
+
+# Switch to the non-root user
+USER appuser
+
+# Expose the application port
 EXPOSE 7788
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "student.jar"]
+# Run the application with memory optimization and security flags
+ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
