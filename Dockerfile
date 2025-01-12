@@ -4,11 +4,14 @@ FROM openjdk:17-jdk-alpine AS builder
 # Set the working directory
 WORKDIR /app
 
-# Copy the application source code and build it
+# Copy the application source code into the container
 COPY . .
 
-# Build the JAR file using Maven (or Gradle if applicable)
-RUN mvn clean package -DskipTests
+# Install Maven in the builder image (optional if Maven is not available)
+RUN apk add --no-cache maven
+
+# Build the JAR file using Maven
+RUN mvn clean package -DskipTests -e
 
 # ======= Stage 2: Run =======
 FROM eclipse-temurin:17-jre-alpine
@@ -19,7 +22,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 # Set the working directory
 WORKDIR /app
 
-# Copy only the built JAR file from the build stage
+# Copy the built JAR file from the build stage
 COPY --from=builder /app/target/*.jar app.jar
 
 # Set permissions for the JAR file
