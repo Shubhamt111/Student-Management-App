@@ -1,5 +1,5 @@
 # ======= Stage 1: Build =======
-FROM eclipse-temurin:21.0.5_11-jdk-ubi9-minimal AS builder
+FROM openjdk:17-jdk-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
