@@ -36,3 +36,4 @@ EXPOSE 7788
 
 # Run the application with memory optimization and security flags
 ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+
