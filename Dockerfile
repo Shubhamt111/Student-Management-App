@@ -1,5 +1,5 @@
 # ======= Stage 1: Build =======
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM eclipse-temurin:21.0.5_11-jdk-ubi9-minimal AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the JAR file using Maven (or Gradle if applicable)
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # ======= Stage 2: Run =======
 FROM eclipse-temurin:17-jre-alpine
