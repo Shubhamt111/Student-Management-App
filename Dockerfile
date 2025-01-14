@@ -7,9 +7,6 @@ WORKDIR /app
 # Copy the application source code into the container
 COPY . .
 
-# Install Maven in the builder image (optional if Maven is not available)
-RUN apk add --no-cache maven
-
 # Build the JAR file using Maven
 RUN mvn clean package -DskipTests -e
 
